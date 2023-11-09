@@ -1,0 +1,157 @@
+\documentclass{scrartcl}
+
+\input{required/packages.tex}
+\input{required/settings.tex}
+\input{required/commands.tex}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+\begin{document}
+	\begin{center}
+		\LARGE
+		Information Integration -- Exercise 1 -- Gabriel Glaser
+	\end{center}
+	\vspace{1cm}
+	\section*{Task 1: Passing from an XML Schema to a relational schema}
+	\begin{enumerate}
+		\item\phantom{phantom}
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{CREATE TABLE} ShipOrders (\\
+					\hspace{0.5cm}orderID int(255) \textbf{NOT NULL},\\
+					\hspace{0.5cm}orderPerson varchar(100),\\
+					\hspace{0.5cm}shiptoName varchar(100),\\
+					\hspace{0.5cm}shiptoAddress varchar(100),\\
+					\hspace{0.5cm}shipToCity varchar(100),\\
+					\hspace{0.5cm}shipToCountry varchar(100),\\
+					\hspace{0.5cm}\textbf{PRIMARY KEY} (orderID)\\
+					);
+				\end{tabular}
+			}\\
+			\vspace{0.6cm}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{CREATE TABLE} Items (\\
+					\hspace{0.5cm}itemID int(255),\\
+					\hspace{0.5cm}itemTitle varchar(100),\\
+					\hspace{0.5cm}itemNote varchar(1000),\\
+					\hspace{0.5cm}itemQuantity int(255) \textbf{CHECK} (item\_quantity >= 1),\\
+					\hspace{0.5cm}itemPrice decimal(6, 2),\\
+					\hspace{0.5cm}orderID int(255),\\
+					\hspace{0.5cm}\textbf{PRIMARY KEY} (itemID)\\
+					\hspace{0.5cm}\textbf{FOREIGN KEY} (orderID) \textbf{REFERENCES} ShipOrders(orderID)\\
+					);
+				\end{tabular}
+			}
+		\end{center}
+		
+		\item
+		Constraints:
+		\begin{itemize}
+			\item orderPerson, shiptoName, shiptoAddress, shipToCity, shipToCountry boundable \checkmark
+			\item orderID required \checkmark
+			\item More item entries possible, but $\geq1$ is not enforced (can be 0 item entries) \lightning
+			\item Variable itemNote optional (could be set to \textbf{NULL} in table, if not present in XML) \checkmark
+			\item Variable quantity positive \checkmark
+			\item Variable price decimal \checkmark
+		\end{itemize}
+		
+		\item
+		SQL requires size definitions (\textit{varchar} and \textit{decimal}), which are not present in the XML schema.
+		
+	\end{enumerate}
+
+	\section*{Task 2: Querying an integrated system}
+	\begin{enumerate}
+		\item Example web form for integrated system:
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{../web\_form.jpg}
+		\end{center}
+	
+		\item Which queries can be answered by the integrating system?
+		\begin{itemize}
+			\item \textit{Q1}: \textbf{Yes}.
+			\textit{CDTtitle} bound \checkmark, only use of \textit{AND} \checkmark, \textit{language} bound \checkmark, no bind of not explicitly allowed variables \checkmark and no comparisons with other operators than =, < or > \checkmark.
+			
+			\item \textit{Q2}: \textbf{No}.
+			\textit{language} not bound.
+			
+			\item \textit{Q3}: \textbf{No}.
+			None of \textit{CDTitle}, \textit{name}, \textit{trackTitle} bound.
+			
+			\item \textit{Q4}: \textbf{No}.
+			None of \textit{CDTitle}, \textit{name}, \textit{trackTitle} bound and use of illegal operator on \textit{position} variable.
+			
+			\item \textit{Q5}: \textbf{No}.
+			Uses \textit{OR} but only \textit{AND} is allowed.
+						
+			\item \textit{Q6}: \textbf{Yes}.
+			\textit{CDTtitle} bound \checkmark, only use of \textit{AND} \checkmark, \textit{language} bound \checkmark, no bind of not explicitly allowed variables \checkmark and only valid operators \checkmark.
+		\end{itemize}
+		
+\newpage		
+		
+		\item Transformation of legal, global queries to each source format:
+		\begin{itemize}
+			\item \textit{Q1}:
+			\begin{itemize}
+				\item \textit{Amazon}:
+				\begin{center}
+					\fbox{
+						\begin{tabular}{l}
+							KeyWords = ""\\
+							Artist = ""\\
+							Title = "The Endless River"\\
+							Label = ""\\
+							EAN/UPC = ""
+						\end{tabular}
+					}
+				\end{center}
+				(\textit{language} not possible to bind)
+				
+				\item \textit{MusicBrainz}:
+				\begin{center}
+					\fbox{
+						\begin{tabular}{l}
+							SELECT * FROM Release\\
+							WHERE Release.release = "The Endless River" AND\\
+							\hspace{0.5cm}Release.lang="EN"
+						\end{tabular}
+					}
+				\end{center}
+			\end{itemize}
+		
+			\item \textit{Q6}:
+			\begin{itemize}
+				\item \textit{Amazon}:
+				\begin{center}
+					\fbox{
+						\begin{tabular}{l}
+							KeyWords = ""\\
+							Artist = "Taylor Swift"\\
+							Title = "1989"\\
+							Label = ""\\
+							EAN/UPC = ""
+						\end{tabular}
+					}
+				\end{center}
+				(\textit{language}, \textit{releaseYear} not possible to bind)
+				
+				\item \textit{MusicBrainz}:
+				\begin{center}
+					\fbox{
+						\begin{tabular}{l}
+							SELECT * FROM Artist, Release\\
+							WHERE Arist.artist="Taylor Swift" AND\\
+							\hspace{0.5cm}Release.release = "1989" AND\\
+							\hspace{0.5cm}Release.date>"2010-12-31" AND\\
+							\hspace{0.5cm}Release.lang="EN"
+						\end{tabular}
+					}
+				\end{center}
+			\end{itemize}
+		\end{itemize}
+		
+	\end{enumerate}
+	
+\end{document}
