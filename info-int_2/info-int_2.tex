@@ -1,0 +1,133 @@
+\documentclass{scrartcl}
+
+\input{required/packages.tex}
+\input{required/settings.tex}
+\input{required/commands.tex}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+\begin{document}
+	\begin{center}
+		\LARGE
+		Information Integration -- Exercise 2 -- Gabriel Glaser
+	\end{center}
+	\vspace{1cm}
+	\section*{Task 1: Heterogeneity}
+	\begin{enumerate}
+		\item 
+		\begin{itemize}
+			\item \textit{Syntactic} (Hardware, Software, Interface): No, only one source.
+			
+			\item \textit{Structural} (Data model, schematic): No, only one source
+			
+			\item \textit{Semantic}:
+			\begin{itemize}
+				\item Name conflict: synonym labels \enquote{year} and \enquote{YEAR}.
+				\item Identity: Some of the first results likely the same (, but couldn't be differentiated, because different and incomplete representations)
+				\item Value conflict: Track titles: \textit{You know you're right} vs. \textit{You Know You're Right} among first Nirvana results.
+			\end{itemize}
+			
+		\end{itemize}
+	
+		\item Extensions to scenario to satisfy missing heterogeneity types:
+		\begin{itemize}
+			\item \textit{Syntactic}: Consider a CD data source from America which likely has a longer response time. (different hardware)
+			
+			\item \textit{Structural}: Consider a CD data source which returns an XML file. (different data model)
+		\end{itemize}
+	\end{enumerate}
+	
+	\section*{Task 3: Distributed DBMS}
+	\begin{enumerate}
+		\item Distribution:
+		\begin{itemize}
+			\item \textit{Physical}: Servers are located in different physical/geographical locations.
+			Therefore, they don't share hardware components (except network).
+			
+			\item \textit{Logical}: Result of application requirements, e.g., store data on different servers to handle network failure or implement caching for more speed.
+		\end{itemize}
+	
+		\item Contained autonomy types:
+		\begin{itemize}
+			\item \textit{Design}: Choose to store DB in 3NF ($3^{\text{rd}}$ normal form) or as a \enquote{BigTable} with less normalization.
+			\item \textit{Communication}: Decision to communicate with SQL and web form (\textit{decision on specific query languages}).
+			Also, they decide to allow write access to older table but not on newer table (\textit{decision on what query capabilities to support}).
+		\end{itemize}
+	
+		\item Execution autonomy is the last type of autonomy.
+		For instance, a system could block queries from some countries.
+		
+		\item Syntactic heterogeneity:
+		\begin{itemize}
+			\item \textit{Hardware}: This type of heterogeneity can be noticed when some datasources process a query faster than others (different CPU/bandwidth).
+			
+			\item \textit{Software}: Different datasources are stored using different operation systems, e.g., need to use different file separators (\enquote{/} for Linux, \enquote{\textbackslash} for Windows).
+			
+			\item \textit{Interface}: For instance, access via URL containing various parameters vs. access via SQL query given to an URL as string.
+		\end{itemize}
+	
+		\item
+		\begin{enumerate}
+			\item Value vs. relation heterogeneity:
+			\begin{center}
+				\fbox{
+				\begin{tabular}{l}
+					Employee(\underline{ID}, Firstname, Lastname, isManager, department, gender)
+				\end{tabular}
+				}\\
+				\vspace{0.3cm}
+				vs.\\
+				\vspace{0.3cm}
+				\fbox{
+				\begin{tabular}{l}
+					MaleEmployee(\underline{ID}, Firstname, Lastname, isManager, department)\\
+					FemaleEmployee(\underline{ID}, Firstname, Lastname, isManager, department)
+				\end{tabular}
+				}
+			\end{center}
+		
+			\item Value vs. attribute heterogeneity:
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						Employee(\underline{ID}, Firstname, Lastname, isManager, department, gender)
+					\end{tabular}
+				}\\
+				\vspace{0.3cm}
+				vs.\\
+				\vspace{0.3cm}
+				\fbox{
+					\begin{tabular}{l}
+						Employee(\underline{ID}, Firstname, Lastname, isManager, department, isFemale, isMale)
+					\end{tabular}
+				}
+			\end{center}
+			
+			\item Different labels of attributes (in comparison with the original):
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						Employee(\underline{ID}, Firstname, Lastname, isManager, \textit{workArea})
+					\end{tabular}
+				}
+			\end{center}
+			
+			\item Normalized vs non-normalized schema (original is normalized):
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						Employee(\underline{ID}, Firstname, Lastname, department)\\
+						Managers(\underline{MID}, \underline{ID $\to$ Employee})
+					\end{tabular}
+				}
+			\end{center}
+		\end{enumerate}
+	\end{enumerate}
+	
+	\section*{Task 4: Integrating publication data}
+	\begin{enumerate}
+		\item
+		\item
+		\item
+	\end{enumerate}
+	
+\end{document}
