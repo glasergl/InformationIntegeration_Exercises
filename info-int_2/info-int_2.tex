@@ -22,7 +22,7 @@
 			\item \textit{Semantic}:
 			\begin{itemize}
 				\item Name conflict: synonym labels \enquote{year} and \enquote{YEAR}.
-				\item Identity: Some of the first results likely the same (, but couldn't be differentiated, because different and incomplete representations)
+				\item Identity: Some of the first results likely refer to the same album, but couldn't be differentiated, because different or incomplete representations.
 				\item Value conflict: Track titles: \textit{You know you're right} vs. \textit{You Know You're Right} among first Nirvana results.
 			\end{itemize}
 			
@@ -60,9 +60,9 @@
 		\begin{itemize}
 			\item \textit{Hardware}: This type of heterogeneity can be noticed when some datasources process a query faster than others (different CPU/bandwidth).
 			
-			\item \textit{Software}: Different datasources are stored using different operation systems, e.g., need to use different file separators (\enquote{/} for Linux, \enquote{\textbackslash} for Windows).
+			\item \textit{Software}: Different datasources could be stored using different operation systems, e.g., need to use different file separators (\enquote{/} for Linux, \enquote{\textbackslash} for Windows).
 			
-			\item \textit{Interface}: For instance, access via URL containing various parameters vs. access via SQL query given to an URL as string.
+			\item \textit{Interface}: For instance, access to datasource, i.e., pass a query, via URL containing various parameters vs. access via SQL query given to an URL as string.
 		\end{itemize}
 	
 		\item
@@ -126,8 +126,71 @@
 	\section*{Task 4: Integrating publication data}
 	\begin{enumerate}
 		\item
-		\item
-		\item
+		\begin{itemize}
+			\item \textbf{Syntactic}:
+			Likely a hardware heterogeneity, because Amazon is a much bigger cooperation than ACM and DBLP.
+			For instance, Amazon is likely more reliable.
+			\item \textbf{Structural}:
+			Different data model between ACM and DBLP (XML vs. BibTex).
+			\item \textbf{Semantic}:
+			Value conflict of attribute \textit{publisher} between ACM and DBLP results (\enquote{ideaGroup} vs. \enquote{ACM}).
+		\end{itemize}
+		\newpage
+		\item \textbf{DBLP}:
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					Publications(\underline{P-ID}, \emph{publicationType}, \emph{key}, \emph{mdate}, title, publisher, year, isbn, url)\\
+					Editors(\underline{E-ID}, name, \underline{P-ID $\to$ Publications})\\
+					%DBLP(\underline{DBLP-ID}, \underline{P-ID $\to$ Publications})
+				\end{tabular}
+			}
+		\end{center}
+		
+		\textbf{ACM}:
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					Publications(\underline{P-ID}, \emph{publicationType}, label, author, title, journal, issue-date, volume, \\
+					\hspace{3cm} number, month, year, issn, pages, numpages, url, doi, acmid,\\
+					\hspace{3cm} publisher, address)\\
+					%ACM(\underline{ACM-ID},\underline{P-ID $\to$ Publications})
+				\end{tabular}
+			}
+		\end{center}
+		
+		\textbf{Amazon}:
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					Items(\underline{Item-ID}, name, \underline{Prize-ID $\to$ Prizes}, description, isbn-10, isbn-13, publisher,\\
+					\hspace{3cm} publishDate, language, size, weight, numberOfPages, review,\\
+					\hspace{3cm} itemType)\\
+					Authors(\underline{Author-ID}, firstname, lastname, \underline{Item-ID $\to$ Items})\\
+					Prizes(\underline{Prize-ID}, \underline{Item-ID $\to$ Items}, description [\textit{e.g., new or used}], prizeInDollar)\\
+					%Amazon(\underline{A-ID}, \underline{Item-ID $\to$ Items})
+				\end{tabular}
+			}
+		\end{center}
+		
+		\item Attribute matches from target schema attributes to matched attributes:
+		\begin{itemize}
+			\item \textbf{DBLP}: Match title $\to$ title, publisher $\to$ publisher, pubType $\to$ publicationType, pubDate $\to$ mdate, editon $\to$ \textit{not given}\\
+			
+			Extract authors from \textit{Editor}-table, then match
+			firstname $\to$ firstname, lastname $\to$ lastname, but authorType $\to$ \textit{not given}.
+			
+			\item \textbf{ACM}: Match title $\to$ title, publisher $\to$ publisher, pubType $\to$ publicationType, pubDate $\to$ \textit{only month, year given}, editon $\to$ volume\\
+			
+			Extract single names by splitting on appropriately, then match
+			firstname $\to$ \textit{only first letter given}, lastname $\to$ lastname, authorType $\to$ \textit{not given}.
+			
+			\item \textbf{Amazon}: Match title $\to$ name, publisher $\to$ publisher, pubType $\to$ itemType, pubDate $\to$ publishDate, editon $\to$ \textit{not given}\\
+			
+			Extract authors from \textit{Authors}-table of Amazon, then match
+			firstname $\to$ firstname, lastname $\to$ \textit{lastname}, authorType $\to$ \textit{not given}.
+		\end{itemize}
+		
 	\end{enumerate}
 	
 \end{document}
