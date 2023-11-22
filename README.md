@@ -1,2 +1,2 @@
 # InformationIntegeration_Exercises
-This repository is to easily present PDF files during the exercise sessions of Information Integration during winter 23/24
+This repository exists to be able to easily present PDF files during the exercise sessions of Information Integration during winter 2023/2024 at the university of Stuttgart.
