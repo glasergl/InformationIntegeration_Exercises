@@ -10,7 +10,6 @@
 		\LARGE
 		Information Integration -- Exercise 3 -- Gabriel Glaser
 	\end{center}
-	\vspace{1cm}
 	\section*{Task 1: Materialized and Virtual Integration}
 	\begin{center}
 		\fbox{
@@ -50,31 +49,31 @@
 		\end{itemize}
 	\end{enumerate}
 	
-	\section*{Task 2: Schema Integration}
-	\begin{center}
-		\fbox{
-			\includegraphics[width=0.9\textwidth]{figures/task2_description.png}
-		}
-	\end{center}
-	\begin{enumerate}
-		\item Found same labels from left source and right source:
-		\begin{center}
-			\begin{tabular}{|r|l|}
-				\hline
-				\textit{Left Source} & \textit{Right Source}\\
-				\hline
-				[dept].country & [address].country\\\relax
-				[project].pname & [fund].pname\\\relax
-				[emp] & [emp]\\\relax
-				[emp].eid & [emp].eid\\\relax
-				[emp].ename & [emp].ename\\\relax
-				[grant].amount & [fund].amount\\
-				\hline
-			\end{tabular}
-		\end{center}
-		\item
-		\item
-	\end{enumerate}
+%	\section*{Task 2: Schema Integration}
+%	\begin{center}
+%		\fbox{
+%			\includegraphics[width=0.9\textwidth]{figures/task2_description.png}
+%		}
+%	\end{center}
+%	\begin{enumerate}
+%		\item Found same labels from left source and right source:
+%		\begin{center}
+%			\begin{tabular}{|r|l|}
+%				\hline
+%				\textit{Left Source} & \textit{Right Source}\\
+%				\hline
+%				[dept].country & [address].country\\\relax
+%				[project].pname & [fund].pname\\\relax
+%				[emp] & [emp]\\\relax
+%				[emp].eid & [emp].eid\\\relax
+%				[emp].ename & [emp].ename\\\relax
+%				[grant].amount & [fund].amount\\
+%				\hline
+%			\end{tabular}
+%		\end{center}
+%		\item
+%		\item
+%	\end{enumerate}
 	
 	\section*{Task 3: Architectures}
 	\begin{center}
@@ -83,9 +82,40 @@
 		}
 	\end{center}
 	\begin{enumerate}
-		\item
-		\item
-		\item
+		\item The 5-Level architecture extends the 4-Level architecture by the \textit{component schema} which is a transformation of the \textit{local schema}.
+		It is needed to help overcoming heterogeneities.
+		The remaining parts of this architecture are...
+		\begin{itemize}
+			\item \textit{external schemas} of federated schema to be able to offer different schemes to different applications.
+			\item \textit{federated schema} which consists of a subset of all attributes of all sources.
+			\item \textit{export schemas} (for each source) to implement access restrictions or leave out unnecessary data.
+		\end{itemize}
+		\begin{center}
+			\hspace*{-1.5cm}
+			\includegraphics[width=1.1\textwidth]{figures/Task3_a_Visualization.png}
+		\end{center}
+	
+		\item\phantom{phantom}
+		\begin{itemize}
+			\item \textit{S1} = (a, b, c, d): This scheme likely is a component schema, because it is relational.
+			Therefore, heterogeneities can be handled easier when considering the step of federation.
+			(However, it could also be a local schema, in case a local source already used a relational schema or an export schema, if it already contains access restrictions)
+			
+			\item \textit{S2} = (a, (b, (c, d))): This scheme likely is a local schema, because hierarchical schemas are difficult to handle during the process of overcoming heterogeneities.
+		\end{itemize}
+	
+		\item Schemas for remaining layers:
+		\begin{itemize}
+			\item \textit{Local Schema} for \textit{S1}: (a, (b, c), d).
+			\item \textit{Component Schema} for \textit{S2}: (a, b, c, d)
+			\item \textit{Export Schema} for both \textit{S1}, \textit{S2}: (a, b, d)
+			\item \textit{Federated Schema}: (a, b, d)
+			\item \textit{External} Schema for \textit{Q1}: (a, b); for \textit{Q2}: (a, d)
+		\end{itemize}
+		\begin{center}
+			\includegraphics[width=0.7\textwidth]{figures/Task3_c_Visualization.png}
+		\end{center}
+		
 	\end{enumerate}
 	
 \end{document}
