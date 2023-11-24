@@ -39,7 +39,7 @@
 		\item
 		This requirement may change the choice, because using materialized integration consists of the step of copying all data of all sources into an own storage.
 		If the needed storage is higher than the given storage space limit, virtual integration has to be used instead.
-		
+		\newpage
 		\item\phantom{phantom}
 		\begin{itemize}
 			\item An advantage of materialized integration is that (if the building of the system has  finished) it doesn't rely on the availability of the sources anymore.
@@ -86,9 +86,9 @@
 		It is needed to help overcoming heterogeneities.
 		The remaining parts of this architecture are...
 		\begin{itemize}
-			\item \textit{external schemas} of federated schema to be able to offer different schemes to different applications.
-			\item \textit{federated schema} which consists of a subset of all attributes of all sources.
-			\item \textit{export schemas} (for each source) to implement access restrictions or leave out unnecessary data.
+			\item \textit{external schemas} of federated schema to be able to offer different schemas to different applications.
+			\item \textit{federated schema} which consists of a subset of all attributes of all sources. (in the form of a different schema)
+			\item \textit{export schemas} to implement access restrictions or leave out unnecessary data. (for each source)
 		\end{itemize}
 		\begin{center}
 			\hspace*{-1.5cm}
@@ -97,11 +97,11 @@
 	
 		\item\phantom{phantom}
 		\begin{itemize}
-			\item \textit{S1} = (a, b, c, d): This scheme likely is a component schema, because it is relational.
+			\item \textit{S1} = (a, b, c, d): This scheme likely is a \textbf{component schema}, because it is relational.
 			Therefore, heterogeneities can be handled easier when considering the step of federation.
-			(However, it could also be a local schema, in case a local source already used a relational schema or an export schema, if it already contains access restrictions)
+			(However, it could also be a local schema, in case a local source already used a relational schema or even an export schema, if it already contains access restrictions of a relational component schema)
 			
-			\item \textit{S2} = (a, (b, (c, d))): This scheme likely is a local schema, because hierarchical schemas are difficult to handle during the process of overcoming heterogeneities.
+			\item \textit{S2} = (a, (b, (c, d))): This scheme likely is a \textbf{local schema}, because hierarchical schemas are (often) difficult to handle during the process of overcoming heterogeneities.
 		\end{itemize}
 	
 		\item Schemas for remaining layers:
@@ -115,7 +115,7 @@
 		\begin{center}
 			\includegraphics[width=0.7\textwidth]{figures/Task3_c_Visualization.png}
 		\end{center}
-		
+		No problems.
 	\end{enumerate}
 	
 \end{document}
