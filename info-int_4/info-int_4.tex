@@ -43,15 +43,61 @@
 			\item Similarly (B,1) \& (A,2) is stable, because B doesn't prefer 2 and 1 doesn't prefer A.
 		\end{itemize}
 		
-		\item The algorithm needs exaclty as many steps as men are there.
+		\item The algorithm needs exactly as many steps as men are there.
 		This is because, during the algorithm each man will propose to a woman who didn't have an offer before.
 		Thus, she accepts and also, won't get further proposals which may could lead to a change (break up and new search for the man who lost the woman who he initially proposed to).
 		
-		\item
+		\item Let's assume each man $m_i$ has the priority list $(w_1, w_2, ..., w_n)$.
+		It is the case that each man $m_i$ performs at least 1, but at most $n$ proposals.
+		Also, it is not possible that any two men $m_i, m_j, i\neq j$ have the same amount of proposals, because then both of their last proposal would address the same woman (which is not allowed).
+		The only way of distributing the (pair-wise different) number of proposals of $n$ men would be that
+		\begin{itemize}
+			\item one man has 1 proposal
+			\item one man has 2 proposals
+			\item one man has 3 proposals
+			\item ...
+			\item one man has $n$ proposals
+		\end{itemize}
+		Therefore, there are
+		\[\sum_{i=1}^ni=\frac{n(n+1)}{2}\]
+		proposals.
 		
-		\item
+		\item\phantom{phantom}
+		\begin{center}
+			\begin{tabular}{|l|}
+				\hline
+				Adam $\to$ Beth $\surd$\\\hline
+				Bill $\to$ Diane $\surd$\\\hline
+				Carl $\to$ Beth $\surd$ $\quad$ Adam loses partner\\\hline
+				Adam $\to$ Amy $\surd$\\\hline
+				Dan $\to$ Amy \lightning\\\hline
+				Dan $\to$ Diane $\surd$ $\quad$ Bill loses partner\\\hline
+				Bill $\to$ Beth \lightning\\\hline
+				Bill $\to$ Amy \lightning\\\hline
+				Bill $\to$ Cara $\surd$\\\hline
+				Eric $\to$ Beth \lightning\\\hline
+				Eric $\to$ Diane $\surd$ $\quad$ Dan loses partner\\\hline
+				Dan $\to$ Cara \lightning\\\hline
+				Dan $\to$ Beth \lightning\\\hline
+				Dan $\to$ Ellen $\surd$\\
+				\hline
+			\end{tabular}
+		\end{center}
+		Result: (Adam, Amy), (Bill, Cara), (Carl, Beth), (Dan, Ellen), (Eric, Diane).
 		
-		\item
+		\item\phantom{phantom}
+		\begin{center}
+			\begin{tabular}{|l|}
+				\hline
+				Amy $\to$ Eric $\surd$\\\hline
+				Beth $\to$ Carl $\surd$\\\hline
+				Cara $\to$ Bill $\surd$\\\hline
+				Diane $\to$ Adam $\surd$\\\hline
+				Ellen $\to$ Dan $\surd$\\
+				\hline
+			\end{tabular}
+		\end{center}
+	Result: (Amy, Eric), (Beth, Carl), (Cara, Bill), (Diane, Adam), (Ellen, Dan).
 		
 	\end{enumerate}
 	
