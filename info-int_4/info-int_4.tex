@@ -103,11 +103,78 @@
 	
 	\section*{Task 3: Schema Matching}
 	\begin{enumerate}
-		\item
+		\item\phantom{phantom}
+		\begin{itemize}
+			\item \textbf{D1}: Columns \textit{SSN} and \textit{Birthday}
+			\item \textbf{D2}: Last two columns
+		\end{itemize}
 		
-		\item
+		\item\phantom{phantom}
+		\begin{itemize}
+			\item\textbf{D1}:
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						\textcolor{gray}{\# SQL code to create a restricted view}\\
+						\textbf{CREATE VIEW} WrapperTableD1 \textbf{AS}\\
+						\textbf{SELECT} SSN, Birthday \textbf{FROM} TableD1;\\
+						\textbf{ALTER} \textbf{TABLE} WrapperTableD1\\
+						\textbf{RENAME} \textbf{COLUMN} Birthday \textbf{TO} BirthYear;
+					\end{tabular}
+				}\\
+				\vspace{0.8cm}
+				\fbox{
+					\begin{tabular}{l}
+						\textcolor{gray}{\# Python}\\
+						\textbf{CREATE VIEW} WrapperTableD1 \textbf{AS}\\
+						\textbf{SELECT} SSN, Birthday \textbf{FROM} TableD1;\\
+						\textbf{ALTER} \textbf{TABLE} WrapperTableD1\\
+						\textbf{RENAME} \textbf{COLUMN} Birthday \textbf{TO} BirthYear;
+					\end{tabular}
+				}
+			\end{center}
+			
+			\item\textbf{D2}:
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						\textcolor{gray}{\# SQL code to create table for relevant data}\\
+						\textbf{CREATE TABLE} WrapperTableD2 (\\
+						\hspace{0.5cm}AverageSalary \textbf{INT}(255),\\
+						\hspace{0.5cm}SSN \textbf{CHAR}(12)\\
+						);
+					\end{tabular}
+				}\\
+				\vspace{0.8cm}
+				\fbox{
+					\begin{tabular}{l}
+						\textcolor{gray}{\# python-like script to extract information and fill in table}\\
+						\textbf{for} row \textbf{in} csv\_rows:\\
+						\hspace{0.5cm}cells = row.split(",")\\
+						\hspace{0.5cm}salary = \textbf{int}(remove\_last\_char(cells[4]))\\
+						\hspace{0.5cm}ssn = cells[5]\\
+						\hspace{0.5cm}run\_sql\_query(\\
+						\hspace{1cm}\textbf{INSERT INTO} WrapperTableD2\\
+						\hspace{1.5cm}\textbf{VALUES}(ssn, salary)\\
+						\hspace{1cm});\\
+						\hspace{0.5cm})
+					\end{tabular}
+				}
+			\end{center}
+		\end{itemize}
 		
-		\item
+		\item Mediator
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{CREATE} \textbf{VIEW} tmp \textbf{AS}\\
+					\textbf{SELECT} * \textbf{FROM} WrapperTableD1, WrapperTableD2 \textbf{WHERE}\\
+					WrapperTableD1.SSN = WrapperTableD2.SSN;\\
+					\textbf{CREATE} \textbf{VIEW} IntegratedTable \textbf{AS}\\
+					\textbf{SELECT} BirthYear, AverageSalary \textbf{FROM} tmp;
+				\end{tabular}
+			}
+		\end{center}
 		
 		\item
 		
