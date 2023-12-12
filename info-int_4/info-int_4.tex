@@ -13,18 +13,78 @@
 	
 	\section*{Task 1: Mediator-Wrapper Architecture}
 	\begin{enumerate}
-		\item
+				\item\phantom{phantom}
+		\begin{itemize}
+			\item \textbf{D1}: Columns \textit{SSN} and \textit{Birthday}
+			\item \textbf{D2}: Last two columns
+		\end{itemize}
 		
-		\item
+		\item\phantom{phantom}
+		\begin{itemize}
+			\item\textbf{Wrapper for D1}:
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						\textbf{CREATE VIEW} WrapperTableD1 \textbf{AS}\\
+						\hspace{0.5cm}\textbf{SELECT} SSN, Birthday \textbf{FROM} TableD1;\\
+						\textbf{UPDATE} WrapperTableD1 \textbf{SET} Birthday = YEAR(Birthday);\\
+						\textbf{ALTER} \textbf{TABLE} WrapperTableD1\\
+						\hspace{0.5cm}\textbf{RENAME} \textbf{COLUMN} Birthday \textbf{TO} BirthYear;\\
+					\end{tabular}
+				}
+			\end{center}
+			
+			\item\textbf{Wrapper for D2}:
+			\begin{center}
+				\fbox{
+					\begin{tabular}{l}
+						\textcolor{gray}{\# python-like script}\\
+						run\_sql\_query(\\
+						\hspace{0.5cm}\textbf{CREATE TABLE} WrapperTableD2 (\\
+						\hspace{1cm}AverageSalary \textbf{INT}(255),\\
+						\hspace{1cm}SSN \textbf{CHAR}(12)\\
+						\hspace{0.5cm});\\
+						)\\
+						\textbf{for} row \textbf{in} \textit{csv\_rows}:\\
+						\hspace{0.5cm}cells = row.split(",")\\
+						\hspace{0.5cm}salary = \textbf{int}(remove\_last\_char(cells[4]))\\
+						\hspace{0.5cm}ssn = cells[5]\\
+						\hspace{0.5cm}run\_sql\_query(\\
+						\hspace{1cm}\textbf{INSERT INTO} WrapperTableD2\\
+						\hspace{1.5cm}\textbf{VALUES}(salary, ssn)\\
+						\hspace{1cm});\\
+						\hspace{0.5cm})
+					\end{tabular}
+				}
+			\end{center}
+		\end{itemize}
 		
-		\item
+		\item \textbf{Mediator}:
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{CREATE} \textbf{VIEW} tmp \textbf{AS}\\
+					\hspace{0.5cm}\textbf{SELECT} * \textbf{FROM} WrapperTableD1, WrapperTableD2\\
+					\hspace{0.5cm}\textbf{WHERE} WrapperTableD1.SSN = WrapperTableD2.SSN;\\
+					\textbf{CREATE} \textbf{VIEW} IntegratedTable \textbf{AS}\\
+					\hspace{0.5cm}\textbf{SELECT} BirthYear, AverageSalary \textbf{FROM} tmp;
+				\end{tabular}
+			}
+		\end{center}
 		
-		\item
+		\item Nothing has to be changed, because the label of all relevant attributes didn't change.
+		Therefore, the Wrapper for \textit{D1} remains to correctly return a table with birthyears and ssns.
 		
-		\item
+		\item This requires a change which, for instance, can be implemented in the mediator by adding another condition to the join of both wrapper tables.
+		The change has the semantic that requires the birthyear being non null, i.e.,
+		\begin{center}
+			\textbf{AND} WrapperTableD1.BirthYear \textbf{IS} \textbf{NOT} \textbf{NULL}.
+		\end{center}
 		
-		\item
-		
+		\item So far, the integrated table doesn't contain the column \textit{State}, thus it has to be added (in the mediator):
+		\begin{center}
+			\textbf{ALTER} \textbf{TABLE} IntegratedTable \textbf{ADD} State \textbf{INT}(255);.
+		\end{center}
 	\end{enumerate}
 	
 	\section*{Task 2: Stable Marriage Algorithm}
@@ -40,7 +100,7 @@
 		\end{center}
 		\begin{itemize}
 			\item (A,1) \& (B,2) is stable, because A doesn't prefer 2 and 1 doesn't prefer B.
-			\item Similarly (B,1) \& (A,2) is stable, because B doesn't prefer 2 and 1 doesn't prefer A.
+			\item Similarly (B,1) \& (A,2) is stable, because B doesn't prefer 2 and 2 doesn't prefer B.
 		\end{itemize}
 		
 		\item The algorithm needs exactly as many steps as men are there.
@@ -83,7 +143,8 @@
 				\hline
 			\end{tabular}
 		\end{center}
-		Result: (Adam, Amy), (Bill, Cara), (Carl, Beth), (Dan, Ellen), (Eric, Diane).
+		(Each arrow represents a proposal which may be accepted $\surd$ or rejected \lightning)\\
+		\textit{Result}: (Adam, Amy), (Bill, Cara), (Carl, Beth), (Dan, Ellen), (Eric, Diane).
 		
 		\item\phantom{phantom}
 		\begin{center}
@@ -103,78 +164,11 @@
 	
 	\section*{Task 3: Schema Matching}
 	\begin{enumerate}
-		\item\phantom{phantom}
-		\begin{itemize}
-			\item \textbf{D1}: Columns \textit{SSN} and \textit{Birthday}
-			\item \textbf{D2}: Last two columns
-		\end{itemize}
+		\item
 		
-		\item\phantom{phantom}
-		\begin{itemize}
-			\item\textbf{D1}:
-			\begin{center}
-				\fbox{
-					\begin{tabular}{l}
-						\textcolor{gray}{\# SQL code to create a restricted view}\\
-						\textbf{CREATE VIEW} WrapperTableD1 \textbf{AS}\\
-						\textbf{SELECT} SSN, Birthday \textbf{FROM} TableD1;\\
-						\textbf{ALTER} \textbf{TABLE} WrapperTableD1\\
-						\textbf{RENAME} \textbf{COLUMN} Birthday \textbf{TO} BirthYear;
-					\end{tabular}
-				}\\
-				\vspace{0.8cm}
-				\fbox{
-					\begin{tabular}{l}
-						\textcolor{gray}{\# Python}\\
-						\textbf{CREATE VIEW} WrapperTableD1 \textbf{AS}\\
-						\textbf{SELECT} SSN, Birthday \textbf{FROM} TableD1;\\
-						\textbf{ALTER} \textbf{TABLE} WrapperTableD1\\
-						\textbf{RENAME} \textbf{COLUMN} Birthday \textbf{TO} BirthYear;
-					\end{tabular}
-				}
-			\end{center}
-			
-			\item\textbf{D2}:
-			\begin{center}
-				\fbox{
-					\begin{tabular}{l}
-						\textcolor{gray}{\# SQL code to create table for relevant data}\\
-						\textbf{CREATE TABLE} WrapperTableD2 (\\
-						\hspace{0.5cm}AverageSalary \textbf{INT}(255),\\
-						\hspace{0.5cm}SSN \textbf{CHAR}(12)\\
-						);
-					\end{tabular}
-				}\\
-				\vspace{0.8cm}
-				\fbox{
-					\begin{tabular}{l}
-						\textcolor{gray}{\# python-like script to extract information and fill in table}\\
-						\textbf{for} row \textbf{in} csv\_rows:\\
-						\hspace{0.5cm}cells = row.split(",")\\
-						\hspace{0.5cm}salary = \textbf{int}(remove\_last\_char(cells[4]))\\
-						\hspace{0.5cm}ssn = cells[5]\\
-						\hspace{0.5cm}run\_sql\_query(\\
-						\hspace{1cm}\textbf{INSERT INTO} WrapperTableD2\\
-						\hspace{1.5cm}\textbf{VALUES}(ssn, salary)\\
-						\hspace{1cm});\\
-						\hspace{0.5cm})
-					\end{tabular}
-				}
-			\end{center}
-		\end{itemize}
+		\item
 		
-		\item Mediator
-		\begin{center}
-			\fbox{
-				\begin{tabular}{l}
-					\textbf{CREATE} \textbf{VIEW} tmp \textbf{AS}\\
-					\textbf{SELECT} * \textbf{FROM} WrapperTableD1, WrapperTableD2 \textbf{WHERE}\\
-					WrapperTableD1.SSN = WrapperTableD2.SSN;\\
-					\textbf{CREATE} \textbf{VIEW} IntegratedTable \textbf{AS}\\
-					\textbf{SELECT} BirthYear, AverageSalary \textbf{FROM} tmp;
-				\end{tabular}
-			}
-		\end{center}
+		\item
 		
 		\item
 		
