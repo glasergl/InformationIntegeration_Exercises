@@ -13,17 +13,101 @@
 	
 	\section*{Task 1: Schema Mapping}
 	\begin{enumerate}
-		\item 
+		\item \textit{Primary paths of source schema}:
+		\begin{itemize}
+			\item company
+			\item grant
+			\item project
+		\end{itemize}
 		
-		\item 
+		\textit{Primary paths of target schema}:
+		\begin{itemize}
+			\item cityStatistics
+			\item cityStatistics, organization
+			\item cityStatistics, organization, funding
+			\item cityStatistics, financial
+			\item cityStatistics, project
+		\end{itemize}
 		
-		\item 
+		\item\phantom{phantom}
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{function} enumerateIntraSchemaAssociationsWithIC(S, C):\\
+						\hspace{0.5cm}List<List<Attribute>{}> primaryPaths = \textit{getPrimaryPaths}(S);\\
+						\hspace{0.5cm}List<List<Attribute>{}> primaryPathsWithIC = [ ];\\
+						\hspace{0.5cm}\textbf{for} (List<Attribute> primaryPath \textbf{in} primaryPath):\\
+							\hspace{1cm}List<Attribute> primaryPathWithIC = [ ];\\
+							\hspace{1cm}\textbf{for} (0 $\leq$ i $<$ \textit{length}(primaryPath)):\\
+								\hspace{1.5cm}Attribute attribute = primaryPath[i];\\
+								\hspace{1.5cm}primaryPathWithIC.\textit{append}(attribute);\\
+								\hspace{1.5cm}Set<Attribute> foreignKeyAttributes = \textit{getForeignKeys}(attribute, C);\\
+								\hspace{1.5cm}primaryPathWithIC.\textit{appendAll}(foreignKeyAttributes);\\
+							\hspace{1cm}primaryPathsWithIC.\textit{append}(primaryPathWithIC);\\
+						\hspace{0.5cm}\textbf{return} primaryPathsWithIC;
+				\end{tabular}
+			}\\
+			\vspace{0.5cm}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{function} getPrimaryPaths(S):\\
+					\hspace{0.5cm}\textbf{if} \textit{isRelational}(S):\\
+					\hspace{1cm}\textbf{return} \textit{getAllTables}(S);\\
+					\hspace{0.5cm}\textbf{else}:\\
+					\hspace{1cm}Tree<Attribute> tree = \textit{recursivalyDescend}(S);\\
+					\hspace{1cm}\textbf{return} \textit{getAllSubPathsToLeafs}(tree);\\
+				\end{tabular}
+			}\\
+		\end{center}
 		
-		\item 
+		\item \textit{Output of algorithm applied on source schema}:
+		\begin{itemize}
+			\item company
+			\item grant, \textbf{company}, \textbf{project}
+			\item project
+		\end{itemize}
 		
-		\item 
+		\textit{Output of algorithm applied on target schema}:
+		\begin{itemize}
+			\item cityStatistics
+			\item cityStatistics, organization
+			\item cityStatistics, organization, funding, \textbf{financial}, \textbf{project}
+			\item cityStatistics, financial
+			\item cityStatistics, project
+		\end{itemize}
 		
-		\item 
+		\item Three associations combinations for source schema, Five associations for target schema, i.e., $3\cdot5=15$ tests.
+		
+		\item Valid association combinations:
+		\begin{itemize}
+			\item company $\to$ cityStatistics, organization
+			\item grant, company, project $\to$ cityStatistics, organization, funding, financial, project
+			\item project $\to$ cityStatistics, project
+		\end{itemize}
+		
+		\item Interpretation depicted in screenshot:
+		\begin{itemize}
+			\item For each \textbf{company} element, create a \textbf{cityStatistics} element with \textbf{company.city} as \textbf{city} (or use an already created \textbf{cityStatistics} element, if one with the same \textbf{city} was created before).
+			Then, create an \textbf{organization} entry with respective \textbf{cid} and \textbf{cname} and append it.
+			
+			\item For each \textbf{grant} element, add a \textbf{funding} element to the set of the \textbf{organization} with same \textbf{cid}.
+			The created funding element has the same \textbf{gid}, but invented , \textbf{faid} and \textbf{recv} values.
+			Inventing values, because the neither the attribute itself (\textbf{recv}) nor the key constraint (\textbf{faid}, \textbf{aid}) occur in high-level mapping.
+			However, \textbf{faid} has to be unique, because of the target key constraint (1:1 mapping with \textbf{amount}, in contrast).
+			Also, use the \textbf{project} value for \textbf{proj}, because \textbf{project} of source and \textbf{proj} of target are involved in a key constraint of value which are connected with a high-level mapping.
+			
+			Furthermore, create a \textbf{financial} entry (for the \textbf{city} in which the \textbf{cid} occurs) with the given \textbf{amount} and invented \textbf{date} and previously invented \textbf{faid} as \textbf{aid}.
+			
+			\item For each \textbf{project} element (with \textbf{name} and \textbf{year}) create \textbf{cityStatistics.project} element for each \textbf{cityStatistics} such that there exists a \textbf{funding} with \textbf{funding.proj} = \textbf{project.name}.
+		\end{itemize}
+		SQL-Queries:
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					d
+				\end{tabular}
+			}
+		\end{center}
 	\end{enumerate}
 	
 	\section*{Task 2: Schema Mapping (Sample exam question)}
