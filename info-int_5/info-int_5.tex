@@ -12,6 +12,13 @@
 	\end{center}
 	
 	\section*{Task 1: Schema Mapping}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{figures/task1_image.PNG}
+	\end{center}
+	\begin{center}
+		\fbox{
+		\includegraphics[width=0.9\textwidth]{figures/task1_description.PNG}}
+	\end{center}
 	\begin{enumerate}
 		\item \textit{Primary paths of source schema}:
 		\begin{itemize}
@@ -87,63 +94,53 @@
 		
 		\item Interpretation depicted in screenshot:
 		\begin{itemize}
-			\item For each \textbf{company} element, create a \textbf{cityStatistics} element with \textbf{company.city} as \textbf{city} (or use an already created \textbf{cityStatistics} element, if one with the same \textbf{city} was created before).
-			Then, create an \textbf{organization} entry with respective \textbf{cid} and \textbf{cname} and append it.
+			\item For each \textbf{company} element, create a \textbf{cityStatistics.organization} element with respective \textbf{cid} and \textbf{cname}.
+			Group the created elements under \textbf{company.city} as \textbf{cityStatistics.city}.
 			
-			\item For each \textbf{grant} element, add a \textbf{funding} element to the set of the \textbf{organization} with same \textbf{cid}.
-			The created funding element has the same \textbf{gid}, but invented , \textbf{faid} and \textbf{recv} values.
-			Inventing values, because the neither the attribute itself (\textbf{recv}) nor the key constraint (\textbf{faid}, \textbf{aid}) occur in high-level mapping.
-			However, \textbf{faid} has to be unique, because of the target key constraint (1:1 mapping with \textbf{amount}, in contrast).
-			Also, use the \textbf{project} value for \textbf{proj}, because \textbf{project} of source and \textbf{proj} of target are involved in a key constraint of value which are connected with a high-level mapping.
+			\item For each \textbf{grant} element, add a \textbf{funding} element to the set of the \textbf{cityStatistics.organization} with same \textbf{cid}.
+			The \textbf{gid} is given, but \textbf{faid} and \textbf{recv} have to be invented (e.g., with skolem function), because there are no key-constraints or high-level mappings.
 			
-			Furthermore, create a \textbf{financial} entry (for the \textbf{city} in which the \textbf{cid} occurs) with the given \textbf{amount} and invented \textbf{date} and previously invented \textbf{faid} as \textbf{aid}.
+			To finish the funding element, use the \textbf{project.name} value for \textbf{funding.proj}, because \textbf{project} of source and \textbf{proj} of target are involved in a key constraint of value which are connected with a high-level mapping.
 			
-			\item For each \textbf{project} element (with \textbf{name} and \textbf{year}) create \textbf{cityStatistics.project} element for each \textbf{cityStatistics} such that there exists a \textbf{funding} with \textbf{funding.proj} = \textbf{project.name}.
+			Finally, create a \textbf{financial} entry (for the \textbf{cityStatistics} in which the a \textbf{cityStatistics.organization} with respective \textbf{cid} occurs) with the given \textbf{amount} and invented \textbf{date} and previously invented \textbf{faid} as \textbf{aid}.
+			
+			\item For each source \textbf{project} element (with \textbf{name} and \textbf{year}) create \textbf{cityStatistics.project} element for each \textbf{cityStatistics} for which there exists a \textbf{funding} with \textbf{project.name} = \textbf{cityStatistics.organization.funding.proj}.
 		\end{itemize}
+		
 		SQL-Queries:
 		\begin{center}
 			\fbox{
 				\begin{tabular}{l}
-					d
+					\textbf{CREATE} \textbf{VIEW} GrantData \textbf{AS}\\
+					\hspace{0.5cm}\textbf{SELECT} * \textbf{FROM} grant\\
+					\hspace{1cm}\textbf{INNER} \textbf{JOIN} company \textbf{ON} grant.cid=company.cid\\
+					\hspace{1cm}\textbf{INNER} \textbf{JOIN} project \textbf{ON} grant.project=project.name;
 				\end{tabular}
 			}
 		\end{center}
-	\end{enumerate}
-	
-	\section*{Task 2: Schema Mapping (Sample exam question)}
-	\begin{enumerate}
-		\item 
-		
-		\item 
-	\end{enumerate}
-	
-	\section*{Task 3: GaV modelling}
-	\begin{enumerate}
-		\item 
-		
-		\item 
-		
-		\item 
-		
-		\item 
-		
-		\item 
-		
-		\item 
-		
-		\item 
-	\end{enumerate}
-	
-	\section*{Task 4: Query Processing in GaV}
-	\begin{enumerate}
-		\item 
-		
-		\item 
-		
-		\item 
-		
-		\item 
-		
-		\item 
+		Get data of remaining companies which don't have a grant:
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{CREATE} \textbf{VIEW} CompanyData \textbf{AS}\\
+					\hspace{0.5cm}\textbf{SELECT} * \textbf{FROM} company\\
+					\hspace{1cm}\textbf{WHERE} \textbf{NOT} \textbf{EXISTS} (\textbf{SELECT} grant.cid \textbf{FROM} grant\\
+					\hspace{1.5cm}\textbf{WHERE} company.cid=grant.cid);\\
+				\end{tabular}
+			}
+		\end{center}
+		Get data of projects and join with company such that the projects can be listed under the right \textbf{cityStatistics.city}.
+		(A project can be listed under multiple)
+		\begin{center}
+			\fbox{
+				\begin{tabular}{l}
+					\textbf{CREATE} \textbf{VIEW} ProjectData \textbf{AS}\\
+					\hspace{0.5cm}\textbf{SELECT} * \textbf{FROM} project\\
+					\hspace{0.5cm}\textbf{INNER} \textbf{JOIN} company \textbf{WHERE} \textbf{EXISTS}\\
+					\hspace{1cm}(\textbf{SELECT} * \textbf{FROM} grant \textbf{WHERE} grant.cid = company.cid\\
+					\hspace{1cm}\textbf{AND} grant.project=project.name);
+				\end{tabular}
+			}
+		\end{center}
 	\end{enumerate}
 \end{document}
